@@ -1,16 +1,16 @@
 {
-  "name": "@zaseth/amf-ts",
+  "name": "@zaseth/amf3-ts",
   "version": "1.0.0",
-  "description": "Fast AMF0/AMF3 library written in pure Typescript with 0 dependencies, supporting TS, Node and the browser.",
+  "description": "Fast AMF3 library written in pure Typescript with 0 dependencies, supporting TS, Node and the browser.",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc -p . && gulp",
     "test": "npm run build && node ./test"
   },
-  "homepage": "https://github.com/Zaseth/AMF-TS",
+  "homepage": "https://github.com/Zaseth/AMF3-TS",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Zaseth/AMF-TS"
+    "url": "https://github.com/Zaseth/AMF3-TS"
   },
   "keywords": [
     "AMF",

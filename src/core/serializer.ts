@@ -39,20 +39,12 @@ export class Serializer {
   }
 
   /**
-   * @description Returns the data of the stream
-   * @returns {Array<number>}
-   */
-  get data(): number[] {
-    return this.stream.data;
-  }
-
-  /**
    * @public
    * @description Serializes data to AMF3 bytes
    * @param {any} data
-   * @returns {void}
+   * @returns {Array<number>}
    */
-  public serialize(data: any): void {
+  public serialize(data: any): number[] {
     if (data === null) {
       this.serializeNull();
     } else if (data === undefined) {
@@ -66,6 +58,8 @@ export class Serializer {
         default: throw new TypeError('Todo.');
       }
     }
+
+    return this.stream.data;
   }
 
   /**

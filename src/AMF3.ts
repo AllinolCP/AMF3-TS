@@ -59,12 +59,10 @@ export abstract class AMF3 {
    * @returns {any}
    */
   public static parse(bytes: number[]): any {
-    const deserializer: Deserializer = new Deserializer({
+    return new Deserializer({
       stream: new Stream(bytes),
       mapping: this.mapping
-    });
-
-    return deserializer.deserialize();
+    }).deserialize();
   }
 
   /**
@@ -75,13 +73,9 @@ export abstract class AMF3 {
    * @returns {Array<number>}
    */
   public static stringify(data: any): number[] {
-    const serializer: Serializer = new Serializer({
+    return new Serializer({
       stream: new Stream(),
       mapping: this.mapping
-    });
-
-    serializer.serialize(data);
-
-    return serializer.data;
+    }).serialize(data);
   }
 }

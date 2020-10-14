@@ -19,6 +19,6 @@ export enum Markers {
   VECTOR_INT = 0x0D,
   VECTOR_UINT = 0x0E,
   VECTOR_DOUBLE = 0x0F,
-  SET = 0x10, // Make use of the unsupported Vector object marker
-  MAP = 0x011 // Make use of the unsupported dictionary marker
+  SET = 0x10, // Make use of the unsupported Vector Object marker
+  MAP = 0x011 // Make use of the unsupported Dictionary marker
 }

@@ -60,7 +60,7 @@ export class Stream {
    * @returns {void}
    */
   private canWrite(value: number, min: number, max: number): void {
-    if (value < min || value > max) {
+    if ((value < min) || (value > max)) {
       throw new RangeError(`The value: '${value}' is out of range (${min}, ${max}).`);
     }
   }

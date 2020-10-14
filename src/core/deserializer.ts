@@ -25,17 +25,17 @@ export class Deserializer {
    * @constructor
    * @param {object} options
    */
-  constructor(options: { [key: string]: any; }) {
+  constructor(options: { [key: string]: Stream | Mapping; }) {
     /**
      * @description Initialize the stream holder
      * @type {Stream}
      */
-    this.stream = options.stream;
+    this.stream = options.stream as Stream;
     /**
      * @description Initialize the mapping holder
      * @type {Mapping}
      */
-    this.mapping = options.mapping;
+    this.mapping = options.mapping as Mapping;
   }
 
   /**

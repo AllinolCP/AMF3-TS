@@ -5,6 +5,7 @@ import { Stream } from '../core/stream';
  * @interface
  */
 export interface IDataOutput {
+  endian: boolean;
   writeByte: (value: number) => void;
   writeUnsignedByte: (value: number) => void;
   writeShort: (value: number) => void;

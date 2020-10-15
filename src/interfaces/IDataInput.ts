@@ -5,6 +5,8 @@ import { Stream } from '../core/stream';
  * @interface
  */
 export interface IDataInput {
+  endian: boolean;
+  readonly bytesAvailable: number;
   readByte: () => number;
   readUnsignedByte: () => number;
   readShort: () => number;

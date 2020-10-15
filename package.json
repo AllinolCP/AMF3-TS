@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc -p . && gulp",
-    "test": "npm run build && node ./test"
+    "test": "npm run build && node ./test",
+    "tstest": "tsc --target es6 --module commonjs ./test/ts/index.ts && node ./test/ts/"
   },
   "homepage": "https://github.com/Zaseth/AMF3-TS",
   "repository": {

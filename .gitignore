@@ -1,1 +1,7 @@
 /dist/
+/test/ts/
+/src/*.js
+/src/core/*.js
+/src/enums/*.js
+/src/types/*.js
+/src/utils/*.js

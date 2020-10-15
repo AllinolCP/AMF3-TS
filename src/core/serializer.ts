@@ -1,7 +1,6 @@
 import { Stream } from './stream';
 import { Mapping } from '../utils/mapping';
 import { Markers } from '../enums/markers';
-import { ECMAArray } from '../index';
 
 /**
  * @exports

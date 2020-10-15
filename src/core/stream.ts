@@ -85,17 +85,6 @@ export class Stream {
 
   /**
    * @public
-   * @static
-   * @description Returns the byte length of a string
-   * @param {string} value
-   * @returns {number}
-   */
-  public static byteLength(value: string): number {
-    return new TextEncoder().encode(value).length;
-  }
-
-  /**
-   * @public
    * @description Writes a signed 8-bit integer
    * @param {number} value
    * @returns {void}

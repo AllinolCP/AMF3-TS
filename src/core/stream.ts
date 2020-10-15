@@ -17,6 +17,12 @@ export class Stream {
    * @type {number}
    */
   public position: number;
+  /**
+   * @public
+   * @description The byte order
+   * @type {boolean}
+   */
+  public endian: boolean;
 
   /**
    * @constructor
@@ -33,6 +39,11 @@ export class Stream {
      * @type {number}
      */
     this.position = 0;
+    /**
+     * @description Initialize the byte order
+     * @type {boolean}
+     */
+    this.endian = false;
   }
 
   /**
@@ -138,8 +149,13 @@ export class Stream {
   public writeShort(value: number): void {
     this.canWrite(value, Sizes.INT16_MIN, Sizes.INT16_MAX);
 
-    this.data[this.position++] = (value >>> 8);
-    this.data[this.position++] = value;
+    if (this.endian) {
+      this.data[this.position++] = value;
+      this.data[this.position++] = (value >>> 8);
+    } else {
+      this.data[this.position++] = (value >>> 8);
+      this.data[this.position++] = value;
+    }
   }
 
   /**
@@ -150,7 +166,11 @@ export class Stream {
   public readShort(): number {
     this.canRead(2);
 
-    return (this.data[this.position++] << 8) | (this.data[this.position++]);
+    return this.endian
+      ? (this.data[this.position++])
+      | (this.data[this.position++] << 8)
+      : (this.data[this.position++] << 8)
+      | (this.data[this.position++]);
   }
 
   /**
@@ -162,8 +182,13 @@ export class Stream {
   public writeUnsignedShort(value: number): void {
     this.canWrite(value, Sizes.UINT16_MIN, Sizes.UINT16_MAX);
 
-    this.data[this.position++] = (value >>> 8);
-    this.data[this.position++] = value;
+    if (this.endian) {
+      this.data[this.position++] = value;
+      this.data[this.position++] = (value >>> 8);
+    } else {
+      this.data[this.position++] = (value >>> 8);
+      this.data[this.position++] = value;
+    }
   }
 
   /**
@@ -174,7 +199,11 @@ export class Stream {
   public readUnsignedShort(): number {
     this.canRead(2);
 
-    return (this.data[this.position++] << 8) | (this.data[this.position++]);
+    return this.endian
+      ? (this.data[this.position++])
+      | (this.data[this.position++] << 8)
+      : (this.data[this.position++] << 8)
+      | (this.data[this.position++]);
   }
 
   /**
@@ -186,10 +215,17 @@ export class Stream {
   public writeInt(value: number): void {
     this.canWrite(value, Sizes.INT32_MIN, Sizes.INT32_MAX);
 
-    this.data[this.position++] = (value >>> 24);
-    this.data[this.position++] = (value >>> 16);
-    this.data[this.position++] = (value >>> 8);
-    this.data[this.position++] = value;
+    if (this.endian) {
+      this.data[this.position++] = value;
+      this.data[this.position++] = (value >>> 8);
+      this.data[this.position++] = (value >>> 16);
+      this.data[this.position++] = (value >>> 24);
+    } else {
+      this.data[this.position++] = (value >>> 24);
+      this.data[this.position++] = (value >>> 16);
+      this.data[this.position++] = (value >>> 8);
+      this.data[this.position++] = value;
+    }
   }
 
   /**
@@ -200,7 +236,12 @@ export class Stream {
   public readInt(): number {
     this.canRead(4);
 
-    return (this.data[this.position++] << 24)
+    return this.endian
+      ? (this.data[this.position++])
+      | (this.data[this.position++] << 8)
+      | (this.data[this.position++] << 16)
+      | (this.data[this.position++] << 24)
+      : (this.data[this.position++] << 24)
       | (this.data[this.position++] << 16)
       | (this.data[this.position++] << 8)
       | (this.data[this.position++]);
@@ -215,10 +256,17 @@ export class Stream {
   public writeUnsignedInt(value: number): void {
     this.canWrite(value, Sizes.UINT32_MIN, Sizes.UINT32_MAX);
 
-    this.data[this.position++] = (value >>> 24);
-    this.data[this.position++] = (value >>> 16);
-    this.data[this.position++] = (value >>> 8);
-    this.data[this.position++] = value;
+    if (this.endian) {
+      this.data[this.position++] = value;
+      this.data[this.position++] = (value >>> 8);
+      this.data[this.position++] = (value >>> 16);
+      this.data[this.position++] = (value >>> 24);
+    } else {
+      this.data[this.position++] = (value >>> 24);
+      this.data[this.position++] = (value >>> 16);
+      this.data[this.position++] = (value >>> 8);
+      this.data[this.position++] = value;
+    }
   }
 
   /**
@@ -229,7 +277,12 @@ export class Stream {
   public readUnsignedInt(): number {
     this.canRead(4);
 
-    return (this.data[this.position++] << 24)
+    return this.endian
+      ? (this.data[this.position++])
+      | (this.data[this.position++] << 8)
+      | (this.data[this.position++] << 16)
+      | (this.data[this.position++] << 24)
+      : (this.data[this.position++] << 24)
       | (this.data[this.position++] << 16)
       | (this.data[this.position++] << 8)
       | (this.data[this.position++]);
@@ -301,7 +354,7 @@ export class Stream {
    */
   public writeFloat(value: number): void {
     const dv: DataView = new DataView(new ArrayBuffer(4));
-    dv.setFloat32(0, value);
+    dv.setFloat32(0, value, this.endian);
 
     const bytes: number[] = [...new Uint8Array(dv.buffer)];
 
@@ -318,7 +371,7 @@ export class Stream {
     this.canRead(4);
 
     const bytes: number[] = this.data.slice(this.position, this.position + 4);
-    const value: number = new Float32Array(Uint8Array.from(bytes.reverse()).buffer)[0];
+    const value: number = new Float32Array(Uint8Array.from(this.endian ? bytes : bytes.reverse()).buffer)[0];
 
     this.position += 4;
 
@@ -333,7 +386,7 @@ export class Stream {
    */
   public writeDouble(value: number): void {
     const dv: DataView = new DataView(new ArrayBuffer(8));
-    dv.setFloat64(0, value);
+    dv.setFloat64(0, value, this.endian);
 
     const bytes: number[] = [...new Uint8Array(dv.buffer)];
 
@@ -350,7 +403,7 @@ export class Stream {
     this.canRead(8);
 
     const bytes: number[] = this.data.slice(this.position, this.position + 8);
-    const value: number = new Float64Array(Uint8Array.from(bytes.reverse()).buffer)[0];
+    const value: number = new Float64Array(Uint8Array.from(this.endian ? bytes : bytes.reverse()).buffer)[0];
 
     this.position += 8;
 

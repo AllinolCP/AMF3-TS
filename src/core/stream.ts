@@ -103,11 +103,7 @@ export class Stream {
   public readByte(): number {
     this.canRead(1);
 
-    const value: number = this.data[this.position++];
-
-    this.canWrite(value, Sizes.INT8_MIN, Sizes.INT8_MAX);
-
-    return value;
+    return this.data[this.position++];
   }
 
   /**
@@ -130,11 +126,7 @@ export class Stream {
   public readUnsignedByte(): number {
     this.canRead(1);
 
-    const value: number = this.data[this.position++];
-
-    this.canWrite(value, Sizes.UINT8_MIN, Sizes.UINT8_MAX);
-
-    return value;
+    return this.data[this.position++];
   }
 
   /**
@@ -158,11 +150,7 @@ export class Stream {
   public readShort(): number {
     this.canRead(2);
 
-    const value: number = (this.data[this.position++] << 8) | (this.data[this.position++]);
-
-    this.canWrite(value, Sizes.INT16_MIN, Sizes.INT16_MAX);
-
-    return value;
+    return (this.data[this.position++] << 8) | (this.data[this.position++]);
   }
 
   /**
@@ -186,11 +174,7 @@ export class Stream {
   public readUnsignedShort(): number {
     this.canRead(2);
 
-    const value: number = (this.data[this.position++] << 8) | (this.data[this.position++]);
-
-    this.canWrite(value, Sizes.UINT16_MIN, Sizes.UINT16_MAX);
-
-    return value;
+    return (this.data[this.position++] << 8) | (this.data[this.position++]);
   }
 
   /**
@@ -216,14 +200,10 @@ export class Stream {
   public readInt(): number {
     this.canRead(4);
 
-    const value: number = (this.data[this.position++] << 24)
+    return (this.data[this.position++] << 24)
       | (this.data[this.position++] << 16)
       | (this.data[this.position++] << 8)
       | (this.data[this.position++]);
-
-    this.canWrite(value, Sizes.INT32_MIN, Sizes.INT32_MAX);
-
-    return value;
   }
 
   /**
@@ -249,14 +229,10 @@ export class Stream {
   public readUnsignedInt(): number {
     this.canRead(4);
 
-    const value: number = (this.data[this.position++] << 24)
+    return (this.data[this.position++] << 24)
       | (this.data[this.position++] << 16)
       | (this.data[this.position++] << 8)
       | (this.data[this.position++]);
-
-    this.canWrite(value, Sizes.UINT32_MIN, Sizes.UINT32_MAX);
-
-    return value;
   }
 
   /**
@@ -280,8 +256,6 @@ export class Stream {
    * @returns {string}
    */
   public readUTF(): string {
-    this.canRead(2);
-
     const length: number = this.readUnsignedShort();
     const bytes: Uint8Array = Uint8Array.from(this.data.slice(this.position, this.position + length));
 

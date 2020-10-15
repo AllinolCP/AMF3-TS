@@ -490,7 +490,7 @@ export class Stream {
     for (let i: number = 0; i < 4; i++) {
       const byte: number = this.readUnsignedByte();
 
-      value = i === 3 ? (value << 8) + byte : (value << 7) + (byte & Sizes.INT8_MAX);
+      value = (i === 3) ? (value << 8) + byte : (value << 7) + (byte & Sizes.INT8_MAX);
 
       if (!(byte & Sizes.UINT29_1)) {
         break;

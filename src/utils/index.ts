@@ -12,8 +12,8 @@ export default {
   byteLength: (str: string): number => new TextEncoder().encode(str).length,
   /**
    * @description Returns whether the given class is Externalizable
-   * @param {any} klass
+   * @param {object} klass
    * @returns {boolean}
    */
-  isExternalizableClass: (klass: any): klass is IExternalizable => ('writeExternal' in klass) && ('readExternal' in klass)
+  isExternalizableClass: (klass: object): klass is IExternalizable => ('writeExternal' in klass) && ('readExternal' in klass)
 }

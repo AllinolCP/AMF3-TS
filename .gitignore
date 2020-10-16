@@ -5,3 +5,5 @@
 /src/enums/*.js
 /src/types/*.js
 /src/utils/*.js
+/src/interfaces/*.js
+/.vscode/

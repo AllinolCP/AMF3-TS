@@ -1,10 +1,12 @@
 import { Sizes } from '../enums/sizes';
+import { IDataInput, IDataOutput } from '../index';
 
 /**
  * @exports
  * @class
+ * @implements IDataInput, IDataOutput
  */
-export class Stream {
+export class Stream implements IDataInput, IDataOutput {
   /**
    * @public
    * @description The array holding the data
@@ -92,6 +94,25 @@ export class Stream {
     if (available < size) {
       throw new RangeError(`Couldn't read an integer of '${size * 8}' bits as there's only '${available}' bytes available.`);
     }
+  }
+
+  /**
+   * @public
+   * @description Writes a boolean
+   * @param {boolean} value
+   * @returns {void}
+   */
+  public writeBoolean(value: boolean): void {
+    this.writeByte(value ? 1 : 0);
+  }
+
+  /**
+   * @public
+   * @description Reads a boolean
+   * @returns {boolean}
+   */
+  public readBoolean(): boolean {
+    return this.readByte() !== 0;
   }
 
   /**
@@ -408,25 +429,6 @@ export class Stream {
     this.position += 8;
 
     return value;
-  }
-
-  /**
-   * @public
-   * @description Writes a boolean
-   * @param {boolean} value
-   * @returns {void}
-   */
-  public writeBoolean(value: boolean): void {
-    this.writeByte(value ? 1 : 0);
-  }
-
-  /**
-   * @public
-   * @description Reads a boolean
-   * @returns {boolean}
-   */
-  public readBoolean(): boolean {
-    return this.readByte() !== 0;
   }
 
   /**

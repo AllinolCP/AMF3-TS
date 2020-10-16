@@ -1,4 +1,5 @@
-import { IDataInput, IDataOutput } from '../index';
+import { IDataInput } from './IDataInput';
+import { IDataOutput } from './IDataOutput';
 
 /**
  * @exports

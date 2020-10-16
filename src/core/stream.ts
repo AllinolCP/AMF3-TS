@@ -1,5 +1,6 @@
 import { Sizes } from '../enums/sizes';
-import { IDataInput, IDataOutput } from '../index';
+import { IDataInput } from '../interfaces/IDataInput';
+import { IDataOutput } from '../interfaces/IDataOutput';
 
 /**
  * @exports

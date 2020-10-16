@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc -p . && gulp",
     "test": "npm run build && node ./test",
-    "tstest": "tsc --target es6 --module commonjs ./test/ts/index.ts && node ./test/ts/"
+    "tstest": "npm run build tsc --target es6 --module commonjs ./test/ts/index.ts && node ./test/ts/"
   },
   "homepage": "https://github.com/Zaseth/AMF3-TS",
   "repository": {

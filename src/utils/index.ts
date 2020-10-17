@@ -1,4 +1,5 @@
 import { IExternalizable } from '../index';
+import { IDynamicPropertyWriter } from '../interfaces/IDynamicPropertyWriter';
 
 /**
  * @exports
@@ -15,5 +16,11 @@ export default {
    * @param {object} klass
    * @returns {boolean}
    */
-  isExternalizableClass: (klass: object): klass is IExternalizable => ('writeExternal' in klass) && ('readExternal' in klass)
+  isExternalizableClass: (klass: object): klass is IExternalizable => ('writeExternal' in klass) && ('readExternal' in klass),
+  /**
+   * @description Returns whether the given class is a dynamic property writer
+   * @param {object} klass
+   * @returns {boolean}
+   */
+  isDynamicPropertyWriterClass: (klass: object): klass is IDynamicPropertyWriter => ('writeDynamicProperties' in klass)
 }

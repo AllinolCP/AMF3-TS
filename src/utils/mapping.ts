@@ -1,3 +1,5 @@
+import Utils from '../utils/index';
+
 /**
  * @exports
  * @class
@@ -15,6 +17,12 @@ export class Mapping {
    * @type {Map<string, object>}
    */
   private aliasMapping: Map<string, object>;
+  /**
+   * @private
+   * @description A dynamic property writer object
+   * @type {object}
+   */
+  private dynamicPropertyWriter: object | null;
 
   /**
    * @constructor
@@ -30,6 +38,43 @@ export class Mapping {
      * @type {Map<string, object>}
      */
     this.aliasMapping = new Map();
+    /**
+     * @description Initialize the dynamic property writer
+     * @type {object|null}
+     */
+    this.dynamicPropertyWriter = null;
+  }
+
+  /**
+   * @public
+   * @description Sets the dynamic property writer
+   * @param {object|null} dpw
+   * @returns {void}
+   */
+  public setDynamicPropertyWriter(dpw: object | null): void {
+    if (!Utils.isDynamicPropertyWriterClass(dpw as object)) {
+      throw new TypeError('Dynamic property writers must be implemented by IDynamicPropertyWriter.')
+    }
+
+    this.dynamicPropertyWriter = dpw;
+  }
+
+  /**
+   * @public
+   * @description Returns the dynamic property writer
+   * @returns {object|null}
+   */
+  public getDynamicPropertyWriter(): object | null {
+    return this.dynamicPropertyWriter;
+  }
+
+  /**
+   * @public
+   * @description Returns whether a dynamic property writer is registered
+   * @returns {boolean}
+   */
+  public hasDynamicPropertyWriter(): boolean {
+    return this.dynamicPropertyWriter !== null;
   }
 
   /**

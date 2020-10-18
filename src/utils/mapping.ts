@@ -20,7 +20,7 @@ export class Mapping {
   /**
    * @private
    * @description A dynamic property writer object
-   * @type {object}
+   * @type {object|null}
    */
   private dynamicPropertyWriter: object | null;
 

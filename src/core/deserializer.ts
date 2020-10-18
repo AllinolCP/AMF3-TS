@@ -1,5 +1,6 @@
 import { Stream } from './stream';
 import { Mapping } from '../utils/mapping';
+import { Reference } from '../utils/reference';
 import { Markers } from '../enums/markers';
 
 /**
@@ -19,6 +20,12 @@ export class Deserializer {
    * @type {Mapping}
    */
   private mapping: Mapping;
+  /**
+   * @private
+   * @description The reference holder
+   * @type {Reference}
+   */
+  private reference: Reference;
 
   /**
    * @constructor
@@ -35,6 +42,11 @@ export class Deserializer {
      * @type {Mapping}
      */
     this.mapping = options.mapping as Mapping;
+    /**
+     * @description Initialize the reference holder
+     * @type {Reference}
+     */
+    this.reference = new Reference();
   }
 
   /**

@@ -1,4 +1,4 @@
-import { IExternalizable } from '../index';
+import { IExternalizable, ECMAArray } from '../index';
 import { IDynamicPropertyWriter } from '../interfaces/IDynamicPropertyWriter';
 
 /**
@@ -11,6 +11,12 @@ export default {
    * @returns {number}
    */
   byteLength: (str: string): number => new TextEncoder().encode(str).length,
+  /**
+   * @description Returns whether the given array is associative
+   * @param {ECMAArray} arr
+   * @returns {boolean}
+   */
+  isAssociativeArray: (arr: ECMAArray): boolean => Object.keys(arr).length !== arr.length,
   /**
    * @description Returns whether the given class is Externalizable
    * @param {object} klass

@@ -65,6 +65,7 @@ export class Deserializer {
       case Markers.INTEGER: return this.deserializeInteger();
       case Markers.DOUBLE: return this.deserializeDouble();
       case Markers.STRING: return this.deserializeString();
+      case Markers.DATE: return this.deserializeDate();
       default: throw new TypeError(`Unknown or unsupported marker found: '${marker}'.`);
     }
   }
@@ -131,6 +132,23 @@ export class Deserializer {
     if (length > 0) {
       this.reference.add('stringReferences', value);
     }
+
+    return value;
+  }
+
+  /**
+   * @private
+   * @description Deserializes a date
+   * @returns {Date}
+   */
+  private deserializeDate(): Date {
+    if (this.reference.get('objectReferences', this.stream.readUInt29())) {
+      return this.reference.dereferenced as Date;
+    }
+
+    const value: Date = new Date(this.stream.readDouble());
+
+    this.reference.add('objectReferences', value);
 
     return value;
   }

@@ -2,6 +2,7 @@ import { Stream } from './stream';
 import { Mapping } from '../utils/mapping';
 import { Reference } from '../utils/reference';
 import { Markers } from '../enums/markers';
+import Utils from '../utils/index';
 
 /**
  * @exports
@@ -67,6 +68,7 @@ export class Serializer {
         case Boolean: this.serializeBoolean(data); break;
         case Number: this.serializeInteger(data); break;
         case String: this.serializeString(data); break;
+        case Date: this.serializeDate(data); break;
         default: throw new TypeError('Todo.');
       }
     }
@@ -150,5 +152,24 @@ export class Serializer {
 
     this.stream.writeUInt29((length << 1) | 1);
     this.stream.writeUTFBytes(value);
+  }
+
+  /**
+   * @private
+   * @description Serializes a date
+   * @param {Date} value
+   * @returns {void}
+   */
+  private serializeDate(value: Date): void {
+    this.stream.writeUnsignedByte(Markers.DATE);
+
+    const idx: number | boolean = this.reference.check('objectReferences', value);
+
+    if (idx !== false) {
+      return this.stream.writeUInt29(idx as number << 1);
+    }
+
+    this.stream.writeUInt29(1);
+    this.stream.writeDouble(value.getTime());
   }
 }

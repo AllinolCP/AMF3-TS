@@ -62,3 +62,10 @@ test('String', (tape) => {
 
   tape.end();
 });
+
+test('Date', (tape) => {
+  const date = new Date(2001, 11, 25);
+
+  tape.deepEqual(AMF3.parse(AMF3.stringify(date)), date);
+  tape.end();
+})

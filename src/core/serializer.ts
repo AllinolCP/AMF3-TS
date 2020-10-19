@@ -140,6 +140,7 @@ export class Serializer {
 
     const length: number = Utils.byteLength(value);
 
+    // Specify that the remaining bits are empty
     if (length === 0) {
       return this.stream.writeUInt29(1);
     }

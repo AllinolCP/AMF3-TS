@@ -129,6 +129,7 @@ export class Deserializer {
     const length: number = this.reference.flags;
     const value: string = length > 0 ? this.stream.readUTFBytes(length) : '';
 
+    // Empty strings can't be referenced
     if (length > 0) {
       this.reference.add('stringReferences', value);
     }

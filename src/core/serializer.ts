@@ -66,6 +66,7 @@ export class Serializer {
       switch (type) {
         case Boolean: this.serializeBoolean(data); break;
         case Number: this.serializeInteger(data); break;
+        case String: this.serializeString(data); break;
         default: throw new TypeError('Todo.');
       }
     }
@@ -122,5 +123,32 @@ export class Serializer {
       this.stream.writeUnsignedByte(Markers.DOUBLE);
       this.stream.writeDouble(value);
     }
+  }
+
+  /**
+   * @private
+   * @description Serializes a string
+   * @param {string} value
+   * @returns {void}
+   */
+  private serializeString(value: string, type: boolean = true): void {
+    if (type) {
+      this.stream.writeUnsignedByte(Markers.STRING);
+    }
+
+    const length: number = Utils.byteLength(value);
+
+    if (length === 0) {
+      return this.stream.writeUInt29(1);
+    }
+
+    const idx: number | boolean = this.reference.check('stringReferences', value);
+
+    if (idx !== false) {
+      return this.stream.writeUInt29(idx as number << 1);
+    }
+
+    this.stream.writeUInt29((length << 1) | 1);
+    this.stream.writeUTFBytes(value);
   }
 }

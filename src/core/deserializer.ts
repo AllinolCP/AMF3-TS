@@ -64,6 +64,7 @@ export class Deserializer {
       case Markers.FALSE: return this.deserializeBoolean(marker);
       case Markers.INTEGER: return this.deserializeInteger();
       case Markers.DOUBLE: return this.deserializeDouble();
+      case Markers.STRING: return this.deserializeString();
       default: throw new TypeError(`Unknown or unsupported marker found: '${marker}'.`);
     }
   }
@@ -112,5 +113,25 @@ export class Deserializer {
    */
   private deserializeDouble(): number {
     return this.stream.readDouble();
+  }
+
+  /**
+   * @private
+   * @description Deserializes a string
+   * @returns {string}
+   */
+  private deserializeString(): string {
+    if (this.reference.get('stringReferences', this.stream.readUInt29())) {
+      return this.reference.dereferenced as string;
+    }
+
+    const length: number = this.reference.flags;
+    const value: string = length > 0 ? this.stream.readUTFBytes(length) : '';
+
+    if (length > 0) {
+      this.reference.add('stringReferences', value);
+    }
+
+    return value;
   }
 }

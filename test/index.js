@@ -41,3 +41,24 @@ test('Integer', (tape) => {
 
   tape.end();
 });
+
+test('String', (tape) => {
+  const values = [
+    'ABC',
+    'ABC'.repeat(100),
+    'I ❤ π',
+    '',
+    ' ',
+    'Thìs ïs ä tÉst!',
+    'Long'.repeat(65535),
+    'Very long'.repeat(65500)
+  ];
+
+  for (let i = 0; i < values.length; i++) {
+    const value = values[i];
+
+    tape.equal(AMF3.parse(AMF3.stringify(value)), value);
+  }
+
+  tape.end();
+});

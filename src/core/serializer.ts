@@ -193,22 +193,36 @@ export class Serializer {
 
     const isAssociative: boolean = Utils.isAssociativeArray(value);
 
-    // An associative array containing array elements must write the length
+    // A normal/mixed array must write the length
     if (!isAssociative || value.length !== 0) {
       this.stream.writeUInt29((value.length << 1) | 1);
     }
 
-    this.stream.writeUInt29(1);
-
-    for (const key in value) {
-      if (isNaN(key as any)) {
-        this.serializeString(key, false);
-      }
-
-      this.serialize(value[key]);
+    // Skip the first uint29 delimiter bits when the array is mixed
+    if (!(isAssociative && value.length > 0)) {
+      this.stream.writeUInt29(1);
     }
 
-    // An associative array containing no array elements must end with uint29
+    // AVM2 writes the associative parts first in a mixed array
+    if (isAssociative) {
+      for (const key in value) {
+        if (isNaN(key as any)) {
+          this.serializeString(key, false);
+          this.serialize(value[key]);
+        }
+      }
+
+      // AVM2 writes the uint29 delimiter bits after the associative parts are written in a mixed array
+      if (value.length > 0) {
+        this.stream.writeUInt29(1);
+      }
+    }
+
+    for (let i: number = 0; i < value.length; i++) {
+      this.serialize(value[i]);
+    }
+
+    // An associative array must end with the uint29 delimiter bits
     if (isAssociative && value.length === 0) {
       this.stream.writeUInt29(1);
     }

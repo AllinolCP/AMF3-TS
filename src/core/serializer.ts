@@ -2,6 +2,7 @@ import { Stream } from './stream';
 import { Mapping } from '../utils/mapping';
 import { Reference } from '../utils/reference';
 import { Markers } from '../enums/markers';
+import { ECMAArray } from '../index';
 import Utils from '../utils/index';
 
 /**
@@ -69,6 +70,7 @@ export class Serializer {
         case Number: this.serializeInteger(data); break;
         case String: this.serializeString(data); break;
         case Date: this.serializeDate(data); break;
+        case Array: this.serializeArray(data); break;
         default: throw new TypeError('Todo.');
       }
     }
@@ -172,5 +174,43 @@ export class Serializer {
 
     this.stream.writeUInt29(1);
     this.stream.writeDouble(value.getTime());
+  }
+
+  /**
+   * @private
+   * @description Serializes an array
+   * @param {Array<any>} value
+   * @returns {void}
+   */
+  private serializeArray(value: ECMAArray): void {
+    this.stream.writeUnsignedByte(Markers.ARRAY);
+
+    const idx: number | boolean = this.reference.check('objectReferences', value);
+
+    if (idx !== false) {
+      return this.stream.writeUInt29(idx as number << 1);
+    }
+
+    const isAssociative: boolean = Utils.isAssociativeArray(value);
+
+    // An associative array containing array elements must write the length
+    if (!isAssociative || value.length !== 0) {
+      this.stream.writeUInt29((value.length << 1) | 1);
+    }
+
+    this.stream.writeUInt29(1);
+
+    for (const key in value) {
+      if (isNaN(key as any)) {
+        this.serializeString(key, false);
+      }
+
+      this.serialize(value[key]);
+    }
+
+    // An associative array containing no array elements must end with uint29
+    if (isAssociative && value.length === 0) {
+      this.stream.writeUInt29(1);
+    }
   }
 }

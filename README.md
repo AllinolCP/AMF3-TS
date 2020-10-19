@@ -26,7 +26,7 @@ This library replaces `Vector` for `native typed array`, `Vector object` for `Se
 | String       |✔️         |✔️           | -                    |
 | XML Document |❌         |❌           | Who uses XML?        |
 | Date         |✔️         |✔️           | -                    |
-| Array        |❌         |❌           | Todo                 |
+| Array        |✔️         |❌           | Todo                 |
 | Object       |❌         |❌           | Todo                 |
 | XML          |❌         |❌           | Who uses XML?        |
 | ByteArray    |❌         |❌           | Todo                 |

@@ -251,7 +251,7 @@ export class Deserializer {
       value[i] = this.stream.readInt();
     }
 
-    if (!fixed) {
+    if (!!fixed) {
       return Object.preventExtensions(value);
     }
 
@@ -278,7 +278,7 @@ export class Deserializer {
       value[i] = this.stream.readUnsignedInt();
     }
 
-    if (!fixed) {
+    if (!!fixed) {
       return Object.preventExtensions(value);
     }
 
@@ -305,7 +305,7 @@ export class Deserializer {
       value[i] = this.stream.readDouble();
     }
 
-    if (!fixed) {
+    if (!!fixed) {
       return Object.preventExtensions(value);
     }
 

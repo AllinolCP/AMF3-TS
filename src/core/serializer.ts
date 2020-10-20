@@ -78,7 +78,7 @@ export class Serializer {
         case Float64Array: this.serializeVectorDouble(data); break;
         case Set: this.serializeSet(data); break;
         case Map: this.serializeMap(data); break;
-        default: throw new TypeError('Todo.');
+        default: throw new TypeError(`Unknown or unsupported type found: '${type.name}'.`);
       }
     }
 

@@ -13,8 +13,6 @@ npm i @zaseth/amf3-ts
 
 # Type compatibility table
 
-This library replaces `ByteArray` for `Stream`, `Vector` for `native typed array`, `Vector object` for `Set` and `Dictionary` for `Map`.
-
 | Type         | Serialize | Deserialize | Reason for exclusion |
 |--------------|-----------|-------------|----------------------|
 | Undefined    |✔️         |✔️           | -                    |
@@ -34,14 +32,16 @@ This library replaces `ByteArray` for `Stream`, `Vector` for `native typed array
 | Vector uint  |✔️         |✔️           | -                    |
 | Vector double|✔️         |✔️           | -                    |
 | Set          |✔️         |✔️           | -                    |
-| Map          |❌         |❌           | Todo                 |
+| Map          |✔️         |✔️           | -                    |
 
 # Extra compatibility table
-
-This library also supports extra compatibility. Please note that **Dynamic property writer** and **Externalizable classes** is only compatible with Typescript.
 
 | Name                      | Supported | Reason for exclusion |
 |---------------------------|-----------|----------------------|
 | Class alias               |❌         | Todo                 |
 | Dynamic property writer   |❌         | Todo                 |
 | Externalizable classes    |❌         | Todo                 |
+
+# Usage
+
+Todo.

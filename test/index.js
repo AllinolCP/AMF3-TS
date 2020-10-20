@@ -156,3 +156,24 @@ test('Set', (tape) => {
 
   tape.end();
 });
+
+test('Map', (tape) => {
+  const map = new Map([['id', 1]]);
+  const values = [
+    map,
+    new Map([['ref1', map], ['ref2', map]]),
+    new Map(),
+    new Map([['map', map]]),
+    new Map([['1', map], ['2', map]]),
+    new Map([['1', map], [2, map]]),
+    new Map([[1, map], [2, map]])
+  ];
+
+  for (let i = 0; i < values.length; i++) {
+    const value = values[i];
+
+    tape.deepEqual(AMF3.parse(AMF3.stringify(value)), value);
+  }
+
+  tape.end();
+});

@@ -74,6 +74,7 @@ export class Deserializer {
       case Markers.VECTOR_UINT: return this.deserializeVectorUint();
       case Markers.VECTOR_DOUBLE: return this.deserializeVectorDouble();
       case Markers.SET: return this.deserializeSet();
+      case Markers.MAP: return this.deserializeMap();
       default: throw new TypeError(`Unknown or unsupported marker found: '${marker}'.`);
     }
   }
@@ -330,6 +331,28 @@ export class Deserializer {
 
     for (let i: number = 0; i < length; i++) {
       value.add(this.deserialize());
+    }
+
+    return value;
+  }
+
+  /**
+   * @private
+   * @description Deserializes a map
+   * @returns {Map<string|number, any>}
+   */
+  private deserializeMap(): Map<string | number, any> {
+    if (this.reference.get('objectReferences', this.stream.readUInt29())) {
+      return this.reference.dereferenced as Map<string | number, any>;
+    }
+
+    const value: Map<string | number, any> = new Map();
+    const length: number = this.reference.flags;
+
+    this.reference.add('objectReferences', value);
+
+    for (let i: number = 0; i < length; i++) {
+      value.set(this.deserialize(), this.deserialize());
     }
 
     return value;

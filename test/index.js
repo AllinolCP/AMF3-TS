@@ -69,3 +69,25 @@ test('Date', (tape) => {
   tape.deepEqual(AMF3.parse(AMF3.stringify(date)), date);
   tape.end();
 })
+
+test('Array', (tape) => {
+  const arr = [1, 2, 3];
+  const values = [
+    arr,
+    [arr, arr],
+    [],
+    [, 'Hi'],
+    [, 'Hi', , NaN,],
+    [[1], , [2], , [3], [arr, arr]],
+    Object.assign([], { mixed: true, associative: true, value: 'Hi' }),
+    Object.assign([], [arr, arr], { ref1: arr, ref2: arr })
+  ];
+
+  for (let i = 0; i < values.length; i++) {
+    const value = values[i];
+
+    tape.deepEqual(AMF3.parse(AMF3.stringify(value)), value);
+  }
+
+  tape.end();
+});

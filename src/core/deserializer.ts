@@ -67,6 +67,7 @@ export class Deserializer {
       case Markers.DOUBLE: return this.deserializeDouble();
       case Markers.STRING: return this.deserializeString();
       case Markers.DATE: return this.deserializeDate();
+      case Markers.ARRAY: return this.deserializeArray();
       default: throw new TypeError(`Unknown or unsupported marker found: '${marker}'.`);
     }
   }
@@ -151,6 +152,57 @@ export class Deserializer {
     const value: Date = new Date(this.stream.readDouble());
 
     this.reference.add('objectReferences', value);
+
+    return value;
+  }
+
+  /**
+   * @private
+   * @description Deserializes an array
+   * @returns {ECMAArray}
+   */
+  private deserializeArray(): ECMAArray {
+    if (this.reference.get('objectReferences', this.stream.readUInt29())) {
+      return this.reference.dereferenced as ECMAArray;
+    }
+
+    const value: ECMAArray = [];
+    const length: number = this.reference.flags;
+
+    this.reference.add('objectReferences', value);
+
+    // When the length is 0, it's an associative array, else it's normal or mixed
+    if (length === 0) {
+      for (let key: string = this.deserializeString(); key !== ''; key = this.deserializeString()) {
+        value[key] = this.deserialize();
+      }
+    } else {
+      const oldPos: number = this.stream.position;
+      const isMixed: boolean = this.deserializeString() !== '';
+
+      // Skip uint29 delimiter for normal arrays
+      this.stream.position = isMixed ? oldPos : oldPos + 1;
+
+      // Mixed arrays write the associative part first
+      if (isMixed) {
+        for (let key: string = this.deserializeString(); key !== ''; key = this.deserializeString()) {
+          value[key] = this.deserialize();
+        }
+      } else {
+        // Initialize length to make sparse entries
+        value.length = length;
+      }
+
+      // Read the remaining values
+      for (let i: number = 0; i < length; i++) {
+        const deserialized: any = this.deserialize();
+
+        // Avoid putting these in the array
+        if (deserialized !== undefined && deserialized !== null) {
+          value[i] = deserialized;
+        }
+      }
+    }
 
     return value;
   }

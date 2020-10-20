@@ -245,6 +245,8 @@ export class Deserializer {
     const value: Int32Array = new Int32Array(length);
     const fixed: boolean = this.stream.readBoolean();
 
+    this.reference.add('objectReferences', value);
+
     for (let i: number = 0; i < length; i++) {
       value[i] = this.stream.readInt();
     }
@@ -270,6 +272,8 @@ export class Deserializer {
     const value: Uint32Array = new Uint32Array(length);
     const fixed: boolean = this.stream.readBoolean();
 
+    this.reference.add('objectReferences', value);
+
     for (let i: number = 0; i < length; i++) {
       value[i] = this.stream.readUnsignedInt();
     }
@@ -294,6 +298,8 @@ export class Deserializer {
     const length: number = this.reference.flags;
     const value: Float64Array = new Float64Array(length);
     const fixed: boolean = this.stream.readBoolean();
+
+    this.reference.add('objectReferences', value);
 
     for (let i: number = 0; i < length; i++) {
       value[i] = this.stream.readDouble();

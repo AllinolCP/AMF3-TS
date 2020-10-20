@@ -255,40 +255,6 @@ export class Serializer {
 
   /**
    * @private
-   * @description Serializes a Vector
-   * @param {Int32Array|Uint32Array|Float64Array} value
-   * @returns {void}
-   */
-  private serializeVector(value: Int32Array | Uint32Array | Float64Array): void {
-    const isVectorInt: boolean = value instanceof Int32Array;
-    const isVectorUint: boolean = value instanceof Uint32Array;
-
-    this.stream.writeUnsignedByte(isVectorInt
-      ? Markers.VECTOR_INT
-      : isVectorUint
-        ? Markers.VECTOR_UINT
-        : Markers.VECTOR_DOUBLE);
-
-    const idx: number | boolean = this.reference.check('objectReferences', value);
-
-    if (idx !== false) {
-      return this.stream.writeUInt29(idx as number << 1);
-    }
-
-    this.stream.writeUInt29((value.length << 1) | 1);
-    this.stream.writeBoolean(Object.isExtensible(value));
-
-    for (let i: number = 0; i < value.length; i++) {
-      isVectorInt
-        ? this.stream.writeInt(value[i])
-        : isVectorUint
-          ? this.stream.writeUnsignedInt(value[i])
-          : this.stream.writeDouble(value[i]);
-    }
-  }
-
-  /**
-   * @private
    * @description Serializes a Vector int
    * @param {Int32Array} value
    * @returns {void}

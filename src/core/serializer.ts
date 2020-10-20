@@ -75,6 +75,7 @@ export class Serializer {
         case Int32Array: this.serializeVectorInt(data); break;
         case Uint32Array: this.serializeVectorUint(data); break;
         case Float64Array: this.serializeVectorDouble(data); break;
+        case Set: this.serializeSet(data); break;
         default: throw new TypeError('Todo.');
       }
     }
@@ -351,6 +352,28 @@ export class Serializer {
 
     for (let i: number = 0; i < value.length; i++) {
       this.stream.writeDouble(value[i]);
+    }
+  }
+
+  /**
+   * @private
+   * @description Serializes a set
+   * @param {Set<any>} value
+   * @returns {void}
+   */
+  private serializeSet(value: Set<any>): void {
+    this.stream.writeUnsignedByte(Markers.SET);
+
+    const idx: number | boolean = this.reference.check('objectReferences', value);
+
+    if (idx !== false) {
+      return this.stream.writeUInt29(idx as number << 1);
+    }
+
+    this.stream.writeUInt29((value.size << 1) | 1);
+
+    for (const element of value) {
+      this.serialize(element);
     }
   }
 }

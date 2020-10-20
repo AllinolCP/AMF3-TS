@@ -73,6 +73,7 @@ export class Deserializer {
       case Markers.VECTOR_INT: return this.deserializeVectorInt();
       case Markers.VECTOR_UINT: return this.deserializeVectorUint();
       case Markers.VECTOR_DOUBLE: return this.deserializeVectorDouble();
+      case Markers.SET: return this.deserializeSet();
       default: throw new TypeError(`Unknown or unsupported marker found: '${marker}'.`);
     }
   }
@@ -307,6 +308,28 @@ export class Deserializer {
 
     if (!!fixed) {
       return Object.preventExtensions(value);
+    }
+
+    return value;
+  }
+
+  /**
+   * @private
+   * @description Deserializes a set
+   * @returns {Set<any>}
+   */
+  private deserializeSet(): Set<any> {
+    if (this.reference.get('objectReferences', this.stream.readUInt29())) {
+      return this.reference.dereferenced as Set<any>;
+    }
+
+    const value: Set<any> = new Set();
+    const length: number = this.reference.flags;
+
+    this.reference.add('objectReferences', value);
+
+    for (let i: number = 0; i < length; i++) {
+      value.add(this.deserialize());
     }
 
     return value;

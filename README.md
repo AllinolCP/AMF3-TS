@@ -33,7 +33,7 @@ This library replaces `ByteArray` for `Stream`, `Vector` for `native typed array
 | Vector int   |✔️         |✔️           | -                    |
 | Vector uint  |✔️         |✔️           | -                    |
 | Vector double|✔️         |✔️           | -                    |
-| Set          |❌         |❌           | Todo                 |
+| Set          |✔️         |✔️           | -                    |
 | Map          |❌         |❌           | Todo                 |
 
 # Extra compatibility table

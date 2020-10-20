@@ -139,3 +139,20 @@ test('Vector', (tape) => {
 
   tape.end();
 });
+
+test('Set', (tape) => {
+  const set = new Set([1, 2, 3]);
+  const values = [
+    set,
+    new Set([set, set]),
+    new Set()
+  ];
+
+  for (let i = 0; i < values.length; i++) {
+    const value = values[i];
+
+    tape.deepEqual(AMF3.parse(AMF3.stringify(value)), value);
+  }
+
+  tape.end();
+});

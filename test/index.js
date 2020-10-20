@@ -1,6 +1,6 @@
 'use strict';
 
-const { AMF3 } = require('../dist/');
+const { AMF3, Stream } = require('../dist/');
 const test = require('tape');
 
 test('Null', (tape) => {
@@ -79,8 +79,8 @@ test('Array', (tape) => {
     [, 'Hi'],
     [, 'Hi', , NaN,],
     [[1], , [2], , [3], [arr, arr]],
-    Object.assign([], { mixed: true, associative: true, value: 'Hi' }),
-    Object.assign([], [arr, arr], { ref1: arr, ref2: arr })
+    Object.assign([], { associative: true, value: 'Hi' }),
+    Object.assign([], [arr, arr], { mixed: true, ref1: arr, ref2: arr })
   ];
 
   for (let i = 0; i < values.length; i++) {
@@ -89,5 +89,13 @@ test('Array', (tape) => {
     tape.deepEqual(AMF3.parse(AMF3.stringify(value)), value);
   }
 
+  tape.end();
+});
+
+test('ByteArray', (tape) => {
+  const stream = new Stream();
+  stream.writeUTF('Hello.');
+
+  tape.equal(AMF3.parse(AMF3.stringify(stream)).readUTF(), 'Hello.');
   tape.end();
 });

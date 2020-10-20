@@ -13,7 +13,7 @@ npm i @zaseth/amf3-ts
 
 # Type compatibility table
 
-This library replaces `Vector` for `native typed array`, `Vector object` for `Set` and `Dictionary` for `Map`.
+This library replaces `ByteArray` for `Stream`, `Vector` for `native typed array`, `Vector object` for `Set` and `Dictionary` for `Map`.
 
 | Type         | Serialize | Deserialize | Reason for exclusion |
 |--------------|-----------|-------------|----------------------|
@@ -29,7 +29,7 @@ This library replaces `Vector` for `native typed array`, `Vector object` for `Se
 | Array        |✔️         |✔️           | -                    |
 | Object       |❌         |❌           | Todo                 |
 | XML          |❌         |❌           | Who uses XML?        |
-| ByteArray    |❌         |❌           | Todo                 |
+| ByteArray    |✔️         |✔️           | -                    |
 | Vector int   |❌         |❌           | Todo                 |
 | Vector uint  |❌         |❌           | Todo                 |
 | Vector double|❌         |❌           | Todo                 |

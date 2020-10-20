@@ -1,8 +1,7 @@
-import { Stream } from './stream';
+import { Stream, ECMAArray } from '../index';
 import { Mapping } from '../utils/mapping';
 import { Reference } from '../utils/reference';
 import { Markers } from '../enums/markers';
-import { ECMAArray } from '../types/ECMAArray';
 
 /**
  * @exports
@@ -68,6 +67,8 @@ export class Deserializer {
       case Markers.STRING: return this.deserializeString();
       case Markers.DATE: return this.deserializeDate();
       case Markers.ARRAY: return this.deserializeArray();
+      //case Markers.OBJECT: return this.deserializeObject();
+      case Markers.BYTEARRAY: return this.deserializeByteArray();
       default: throw new TypeError(`Unknown or unsupported marker found: '${marker}'.`);
     }
   }
@@ -203,6 +204,25 @@ export class Deserializer {
         }
       }
     }
+
+    return value;
+  }
+
+  /**
+   * @private
+   * @description Deserializes a ByteArray
+   * @returns {Stream}
+   */
+  private deserializeByteArray(): Stream {
+    if (this.reference.get('objectReferences', this.stream.readUInt29())) {
+      return this.reference.dereferenced as Stream;
+    }
+
+    const value: Stream = new Stream();
+    const length: number = this.reference.flags;
+
+    this.reference.add('objectReferences', value);
+    this.stream.readBytes(value, 0, length);
 
     return value;
   }

@@ -1,8 +1,7 @@
-import { Stream } from './stream';
+import { Stream, ECMAArray } from '../index';
 import { Mapping } from '../utils/mapping';
 import { Reference } from '../utils/reference';
 import { Markers } from '../enums/markers';
-import { ECMAArray } from '../index';
 import Utils from '../utils/index';
 
 /**
@@ -71,6 +70,8 @@ export class Serializer {
         case String: this.serializeString(data); break;
         case Date: this.serializeDate(data); break;
         case Array: this.serializeArray(data); break;
+        //case Object: this.serializeObject(data); break;
+        case Stream: this.serializeByteArray(data); break;
         default: throw new TypeError('Todo.');
       }
     }
@@ -226,5 +227,24 @@ export class Serializer {
     if (isAssociative && value.length === 0) {
       this.stream.writeUInt29(1);
     }
+  }
+
+  /**
+   * @private
+   * @description Serializes a ByteArray
+   * @param {Stream} value
+   * @returns {void}
+   */
+  private serializeByteArray(value: Stream): void {
+    this.stream.writeUnsignedByte(Markers.BYTEARRAY);
+
+    const idx: number | boolean = this.reference.check('objectReferences', value);
+
+    if (idx !== false) {
+      return this.stream.writeUInt29(idx as number << 1);
+    }
+
+    this.stream.writeUInt29((value.length << 1) | 1);
+    this.stream.writeBytes(value);
   }
 }

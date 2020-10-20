@@ -60,8 +60,9 @@ export class Deserializer {
     switch (marker) {
       case Markers.NULL: return this.deserializeNull();
       case Markers.UNDEFINED: return this.deserializeUndefined();
-      case Markers.TRUE: return this.deserializeBoolean(marker);
-      case Markers.FALSE: return this.deserializeBoolean(marker);
+      case Markers.TRUE:
+      case Markers.FALSE:
+        return this.deserializeBoolean(marker);
       case Markers.INTEGER: return this.deserializeInteger();
       case Markers.DOUBLE: return this.deserializeDouble();
       case Markers.STRING: return this.deserializeString();

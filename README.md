@@ -30,9 +30,9 @@ This library replaces `ByteArray` for `Stream`, `Vector` for `native typed array
 | Object       |❌         |❌           | Todo                 |
 | XML          |❌         |❌           | Who uses XML?        |
 | ByteArray    |✔️         |✔️           | -                    |
-| Vector int   |❌         |❌           | Todo                 |
-| Vector uint  |❌         |❌           | Todo                 |
-| Vector double|❌         |❌           | Todo                 |
+| Vector int   |✔️         |✔️           | -                    |
+| Vector uint  |✔️         |✔️           | -                    |
+| Vector double|✔️         |✔️           | -                    |
 | Set          |❌         |❌           | Todo                 |
 | Map          |❌         |❌           | Todo                 |
 

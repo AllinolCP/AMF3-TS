@@ -70,6 +70,9 @@ export class Deserializer {
       case Markers.ARRAY: return this.deserializeArray();
       //case Markers.OBJECT: return this.deserializeObject();
       case Markers.BYTEARRAY: return this.deserializeByteArray();
+      case Markers.VECTOR_INT: return this.deserializeVectorInt();
+      case Markers.VECTOR_UINT: return this.deserializeVectorUint();
+      case Markers.VECTOR_DOUBLE: return this.deserializeVectorDouble();
       default: throw new TypeError(`Unknown or unsupported marker found: '${marker}'.`);
     }
   }
@@ -224,6 +227,81 @@ export class Deserializer {
 
     this.reference.add('objectReferences', value);
     this.stream.readBytes(value, 0, length);
+
+    return value;
+  }
+
+  /**
+   * @private
+   * @description Deserializes a Vector int
+   * @returns {Int32Array}
+   */
+  private deserializeVectorInt(): Int32Array {
+    if (this.reference.get('objectReferences', this.stream.readUInt29())) {
+      return this.reference.dereferenced as Int32Array;
+    }
+
+    const length: number = this.reference.flags;
+    const value: Int32Array = new Int32Array(length);
+    const fixed: boolean = this.stream.readBoolean();
+
+    for (let i: number = 0; i < length; i++) {
+      value[i] = this.stream.readInt();
+    }
+
+    if (!fixed) {
+      return Object.preventExtensions(value);
+    }
+
+    return value;
+  }
+
+  /**
+   * @private
+   * @description Deserializes a Vector uint
+   * @returns {Uint32Array}
+   */
+  private deserializeVectorUint(): Uint32Array {
+    if (this.reference.get('objectReferences', this.stream.readUInt29())) {
+      return this.reference.dereferenced as Uint32Array;
+    }
+
+    const length: number = this.reference.flags;
+    const value: Uint32Array = new Uint32Array(length);
+    const fixed: boolean = this.stream.readBoolean();
+
+    for (let i: number = 0; i < length; i++) {
+      value[i] = this.stream.readUnsignedInt();
+    }
+
+    if (!fixed) {
+      return Object.preventExtensions(value);
+    }
+
+    return value;
+  }
+
+  /**
+   * @private
+   * @description Deserializes a Vector double
+   * @returns {Float64Array}
+   */
+  private deserializeVectorDouble(): Float64Array {
+    if (this.reference.get('objectReferences', this.stream.readUInt29())) {
+      return this.reference.dereferenced as Float64Array;
+    }
+
+    const length: number = this.reference.flags;
+    const value: Float64Array = new Float64Array(length);
+    const fixed: boolean = this.stream.readBoolean();
+
+    for (let i: number = 0; i < length; i++) {
+      value[i] = this.stream.readDouble();
+    }
+
+    if (!fixed) {
+      return Object.preventExtensions(value);
+    }
 
     return value;
   }

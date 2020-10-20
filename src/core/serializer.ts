@@ -72,6 +72,9 @@ export class Serializer {
         case Array: this.serializeArray(data); break;
         //case Object: this.serializeObject(data); break;
         case Stream: this.serializeByteArray(data); break;
+        case Int32Array: this.serializeVectorInt(data); break;
+        case Uint32Array: this.serializeVectorUint(data); break;
+        case Float64Array: this.serializeVectorDouble(data); break;
         default: throw new TypeError('Todo.');
       }
     }
@@ -246,5 +249,108 @@ export class Serializer {
 
     this.stream.writeUInt29((value.length << 1) | 1);
     this.stream.writeBytes(value);
+  }
+
+  /**
+   * @private
+   * @description Serializes a Vector
+   * @param {Int32Array|Uint32Array|Float64Array} value
+   * @returns {void}
+   */
+  private serializeVector(value: Int32Array | Uint32Array | Float64Array): void {
+    const isVectorInt: boolean = value instanceof Int32Array;
+    const isVectorUint: boolean = value instanceof Uint32Array;
+
+    this.stream.writeUnsignedByte(isVectorInt
+      ? Markers.VECTOR_INT
+      : isVectorUint
+        ? Markers.VECTOR_UINT
+        : Markers.VECTOR_DOUBLE);
+
+    const idx: number | boolean = this.reference.check('objectReferences', value);
+
+    if (idx !== false) {
+      return this.stream.writeUInt29(idx as number << 1);
+    }
+
+    this.stream.writeUInt29((value.length << 1) | 1);
+    this.stream.writeBoolean(Object.isExtensible(value));
+
+    for (let i: number = 0; i < value.length; i++) {
+      isVectorInt
+        ? this.stream.writeInt(value[i])
+        : isVectorUint
+          ? this.stream.writeUnsignedInt(value[i])
+          : this.stream.writeDouble(value[i]);
+    }
+  }
+
+  /**
+   * @private
+   * @description Serializes a Vector int
+   * @param {Int32Array} value
+   * @returns {void}
+   */
+  private serializeVectorInt(value: Int32Array): void {
+    this.stream.writeUnsignedByte(Markers.VECTOR_INT);
+
+    const idx: number | boolean = this.reference.check('objectReferences', value);
+
+    if (idx !== false) {
+      return this.stream.writeUInt29(idx as number << 1);
+    }
+
+    this.stream.writeUInt29((value.length << 1) | 1);
+    this.stream.writeBoolean(Object.isExtensible(value));
+
+    for (let i: number = 0; i < value.length; i++) {
+      this.stream.writeInt(value[i]);
+    }
+  }
+
+  /**
+   * @private
+   * @description Serializes a Vector uint
+   * @param {Uint32Array} value
+   * @returns {void}
+   */
+  private serializeVectorUint(value: Uint32Array): void {
+    this.stream.writeUnsignedByte(Markers.VECTOR_UINT);
+
+    const idx: number | boolean = this.reference.check('objectReferences', value);
+
+    if (idx !== false) {
+      return this.stream.writeUInt29(idx as number << 1);
+    }
+
+    this.stream.writeUInt29((value.length << 1) | 1);
+    this.stream.writeBoolean(Object.isExtensible(value));
+
+    for (let i: number = 0; i < value.length; i++) {
+      this.stream.writeUnsignedInt(value[i]);
+    }
+  }
+
+  /**
+   * @private
+   * @description Serializes a Vector double
+   * @param {Float64Array} value
+   * @returns {void}
+   */
+  private serializeVectorDouble(value: Float64Array): void {
+    this.stream.writeUnsignedByte(Markers.VECTOR_DOUBLE);
+
+    const idx: number | boolean = this.reference.check('objectReferences', value);
+
+    if (idx !== false) {
+      return this.stream.writeUInt29(idx as number << 1);
+    }
+
+    this.stream.writeUInt29((value.length << 1) | 1);
+    this.stream.writeBoolean(Object.isExtensible(value));
+
+    for (let i: number = 0; i < value.length; i++) {
+      this.stream.writeDouble(value[i]);
+    }
   }
 }

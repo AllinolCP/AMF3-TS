@@ -99,3 +99,43 @@ test('ByteArray', (tape) => {
   tape.equal(AMF3.parse(AMF3.stringify(stream)).readUTF(), 'Hello.');
   tape.end();
 });
+
+test('Vector', (tape) => {
+  const vectorInt = new Int32Array([1, 2, 3]);
+  const vectorUint = new Uint32Array([1, 2, 3]);
+  const vectorDouble = new Float64Array([1.1, 2.2, 3.3]);
+
+  const deserializedVectorInt = AMF3.parse(AMF3.stringify(vectorInt));
+  const deserializedVectorUint = AMF3.parse(AMF3.stringify(vectorUint));
+  const deserializedVectorDouble = AMF3.parse(AMF3.stringify(vectorDouble));
+
+  tape.deepEqual(deserializedVectorInt, vectorInt);
+  tape.deepEqual(deserializedVectorUint, vectorUint);
+  tape.deepEqual(deserializedVectorDouble, vectorDouble);
+
+  tape.ok(Object.isExtensible(deserializedVectorInt));
+  tape.ok(Object.isExtensible(deserializedVectorUint));
+  tape.ok(Object.isExtensible(deserializedVectorDouble));
+
+  const fixedVectorInt = new Int32Array([1, 2, 3]);
+  const fixedVectorUint = new Uint32Array([1, 2, 3]);
+  const fixedVectorDouble = new Float64Array([1.1, 2.2, 3.3]);
+
+  Object.preventExtensions(fixedVectorInt);
+  Object.preventExtensions(fixedVectorUint);
+  Object.preventExtensions(fixedVectorDouble);
+
+  const deserializedFixedVectorInt = AMF3.parse(AMF3.stringify(fixedVectorInt));
+  const deserializedFixedVectorUint = AMF3.parse(AMF3.stringify(fixedVectorUint));
+  const deserializedFixedVectorDouble = AMF3.parse(AMF3.stringify(fixedVectorDouble));
+
+  tape.deepEqual(deserializedFixedVectorInt, fixedVectorInt);
+  tape.deepEqual(deserializedFixedVectorUint, fixedVectorUint);
+  tape.deepEqual(deserializedFixedVectorDouble, fixedVectorDouble);
+
+  tape.notOk(Object.isExtensible(deserializedFixedVectorInt));
+  tape.notOk(Object.isExtensible(deserializedFixedVectorUint));
+  tape.notOk(Object.isExtensible(deserializedFixedVectorDouble));
+
+  tape.end();
+});

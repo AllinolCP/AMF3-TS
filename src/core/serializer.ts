@@ -301,7 +301,7 @@ export class Serializer {
     }
 
     this.stream.writeUInt29((value.length << 1) | 1);
-    this.stream.writeBoolean(Object.isExtensible(value));
+    this.stream.writeBoolean(!Object.isExtensible(value));
 
     for (let i: number = 0; i < value.length; i++) {
       this.stream.writeInt(value[i]);
@@ -324,7 +324,7 @@ export class Serializer {
     }
 
     this.stream.writeUInt29((value.length << 1) | 1);
-    this.stream.writeBoolean(Object.isExtensible(value));
+    this.stream.writeBoolean(!Object.isExtensible(value));
 
     for (let i: number = 0; i < value.length; i++) {
       this.stream.writeUnsignedInt(value[i]);
@@ -347,7 +347,7 @@ export class Serializer {
     }
 
     this.stream.writeUInt29((value.length << 1) | 1);
-    this.stream.writeBoolean(Object.isExtensible(value));
+    this.stream.writeBoolean(!Object.isExtensible(value));
 
     for (let i: number = 0; i < value.length; i++) {
       this.stream.writeDouble(value[i]);

@@ -36,11 +36,11 @@ npm i @zaseth/amf3-ts
 
 # Extra compatibility table
 
-| Name                      | Supported | Reason for exclusion |
-|---------------------------|-----------|----------------------|
-| Class alias               |❌         | Todo                 |
-| Dynamic property writer   |❌         | Todo                 |
-| Externalizable classes    |❌         | Todo                 |
+| Name                      | Supported | Platform   |
+|---------------------------|-----------|------------|
+| Class alias               |❌         | All        |
+| Dynamic property writer   |❌         | Typescript |
+| Externalizable classes    |❌         | Typescript |
 
 # Usage
 

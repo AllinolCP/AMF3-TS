@@ -70,6 +70,7 @@ export class Serializer {
         case String: this.serializeString(data); break;
         case Date: this.serializeDate(data); break;
         case Array: this.serializeArray(data); break;
+        case Function: this.serializeUndefined(); break;
         //case Object: this.serializeObject(data); break;
         case Stream: this.serializeByteArray(data); break;
         case Int32Array: this.serializeVectorInt(data); break;

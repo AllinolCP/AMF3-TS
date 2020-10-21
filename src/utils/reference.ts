@@ -155,7 +155,7 @@ export class Reference {
    * @returns {void}
    */
   public add(table: string, value: string | object): void {
-    if (table === 'traitReferences') {
+    if (table === 'traitReferences' && typeof value !== 'string') {
       value = JSON.stringify(value);
     }
 

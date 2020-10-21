@@ -6,6 +6,15 @@ import { IDynamicPropertyWriter } from '../interfaces/IDynamicPropertyWriter';
  */
 export default {
   /**
+   * @description Returns whether the given type is a global object or a class
+   * @param {string} type
+   * @returns {boolean}
+   */
+  isClass: (type: string): boolean => [
+    'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array',
+    'Uint16Array', 'Float32Array', 'DataView', 'ArrayBuffer', 'WeakMap'
+  ].indexOf(type) === -1,
+  /**
    * @description Returns the byte length of a string
    * @param {string} str
    * @returns {number}

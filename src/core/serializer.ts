@@ -71,15 +71,14 @@ export class Serializer {
         case Date: this.serializeDate(data); break;
         case Array: this.serializeArray(data); break;
         case Function: this.serializeUndefined(); break;
-        //case Object: this.serializeObject(data); break;
+        case Object: this.serializeObject(data); break;
         case Stream: this.serializeByteArray(data); break;
         case Int32Array: this.serializeVectorInt(data); break;
         case Uint32Array: this.serializeVectorUint(data); break;
         case Float64Array: this.serializeVectorDouble(data); break;
         case Set: this.serializeSet(data); break;
         case Map: this.serializeMap(data); break;
-        //default: this.serializeUnidentifiedObject(data); break;
-        default: throw new TypeError(`Unknown or unsupported type found: '${type.name}'.`);
+        default: this.serializeUnidentifiedObject(data); break;
       }
     }
 
@@ -238,6 +237,44 @@ export class Serializer {
 
   /**
    * @private
+   * @description Serializes an object
+   * @param {object} value
+   * @returns {void}
+   */
+  private serializeObject(value: { [key: string]: any; }): void {
+    this.stream.writeUnsignedByte(Markers.OBJECT);
+
+    const valueIdx: number | boolean = this.reference.check('objectReferences', value);
+
+    if (valueIdx !== false) {
+      return this.stream.writeUInt29(valueIdx as number << 1);
+    }
+
+    const traits: { [key: string]: any; } = {};
+    const type: Function = Object.getPrototypeOf(value).constructor;
+
+    traits.className = this.mapping.isRegisteredClassAlias(type) ? this.mapping.getQualifiedClassName(type) : '';
+    traits.externalizable = Utils.isExternalizableClass(value);
+    traits.dynamic = (traits.className === '' && type === Object);
+    traits.keys = (traits.externalizable || traits.dynamic) ? [] : Object.keys(value);
+    traits.count = traits.keys.length;
+
+    if (traits.externalizable && !this.mapping.isRegisteredClassAlias(type)) {
+      throw new Error(`Tried to serialize an unregistered externalizable class: '${type.name}'.`);
+    }
+
+    const traitIdx: number | boolean = this.reference.check('traitReferences', traits);
+
+    if (traitIdx !== false) {
+      return this.stream.writeUInt29((traitIdx as number << 2) | 1);
+    }
+
+    this.stream.writeUInt29(3 | (traits.externalizable ? 4 : 0) | (traits.dynamic ? 8 : 0) | (traits.count << 4));
+    this.serializeString(traits.className, false);
+  }
+
+  /**
+   * @private
    * @description Serializes a ByteArray
    * @param {Stream} value
    * @returns {void}
@@ -366,6 +403,26 @@ export class Serializer {
     for (const [key, data] of value) {
       this.serialize(key); // Write the type to support strings and numbers
       this.serialize(data);
+    }
+  }
+
+  /**
+   * @private
+   * @description Serializes an unidentified object
+   * @param {object} value
+   * @returns {void}
+   */
+  private serializeUnidentifiedObject(value: { [key: string]: any; }): void {
+    const type: Function = Object.getPrototypeOf(value).constructor;
+
+    if (this.mapping.isRegisteredClassAlias(type)) {
+      this.serializeObject(value);
+    } else {
+      if (Utils.isClass(type.name.toString())) {
+        return this.serializeObject(value);
+      }
+
+      throw new TypeError(`Unknown or unsupported type found: '${type.name}'.`);
     }
   }
 }

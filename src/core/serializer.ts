@@ -266,11 +266,11 @@ export class Serializer {
     const traitIdx: number | boolean = this.reference.check('traitReferences', traits);
 
     if (traitIdx !== false) {
-      return this.stream.writeUInt29((traitIdx as number << 2) | 1);
+      this.stream.writeUInt29((traitIdx as number << 2) | 1);
+    } else {
+      this.stream.writeUInt29(3 | (traits.externalizable ? 4 : 0) | (traits.dynamic ? 8 : 0) | (traits.count << 4));
+      this.serializeString(traits.className, false);
     }
-
-    this.stream.writeUInt29(3 | (traits.externalizable ? 4 : 0) | (traits.dynamic ? 8 : 0) | (traits.count << 4));
-    this.serializeString(traits.className, false);
   }
 
   /**

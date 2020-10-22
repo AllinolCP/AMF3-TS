@@ -1,14 +1,14 @@
 # AMF3-TS
 
-[![npm version](https://img.shields.io/npm/v/@zaseth/amf3-ts?style=flat-square)](https://www.npmjs.com/package/@zaseth/amf3-ts)
-[![](https://data.jsdelivr.com/v1/package/npm/@zaseth/amf3-ts/badge)](https://www.jsdelivr.com/package/npm/@zaseth/amf3-ts)
+[![npm version](https://img.shields.io/npm/v/amf3-ts?style=flat-square)](https://www.npmjs.com/package/amf3-ts)
+[![](https://data.jsdelivr.com/v1/package/npm/amf3-ts/badge)](https://www.jsdelivr.com/package/npm/amf3-ts)
 
 Fast AMF3 library written in pure Typescript with 0 dependencies, supporting TS, Node and the browser.
 
 # Installation
 
 ```
-npm i @zaseth/amf3-ts
+npm i amf3-ts
 ```
 
 # Type compatibility table
@@ -52,7 +52,7 @@ Working with basic types is very self explanatory.
 
 **Typescript**
 ```ts
-import { AMF3, ECMAArray } from '@zaseth/amf3-ts';
+import { AMF3, ECMAArray } from 'amf3-ts';
 
 const obj: object = { id: 1 };
 const ref: object = { ref1: obj, ref2: obj };
@@ -67,7 +67,7 @@ AMF3.parse(AMF3.stringify(arr));
 
 **Node**
 ```js
-const { AMF3 } = require('@zaseth/amf3-ts');
+const { AMF3 } = require('amf3-ts');
 
 const obj = { id: 1 };
 const ref = { ref1: obj, ref2: obj };
@@ -82,7 +82,7 @@ AMF3.parse(AMF3.stringify(arr));
 
 **Browser**
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@zaseth/amf3-ts@latest/browser/AMF3.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/amf3-ts@latest/browser/AMF3.js"></script>
 
 <script>
   const obj = { id: 1 };
@@ -109,7 +109,7 @@ This library has a few changes:
 
 **Typescript**
 ```ts
-import { AMF3, Stream } from '@zaseth/amf3-ts';
+import { AMF3, Stream } from 'amf3-ts';
 
 const map: Map<string | number, any> = new Map([[1, 'Value']]);
 const set: Set<any> = new Set([1, 'A', 2, 'B', 3, 'C']);
@@ -129,7 +129,7 @@ AMF3.parse(AMF3.stringify(stream));
 
 **Node**
 ```js
-const { AMF3, Stream } = require('@zaseth/amf3-ts');
+const { AMF3, Stream } = require('amf3-ts');
 
 const map = new Map([[1, 'Value']]);
 const set = new Set([1, 'A', 2, 'B', 3, 'C']);
@@ -149,7 +149,7 @@ AMF3.parse(AMF3.stringify(stream));
 
 **Browser**
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@zaseth/amf3-ts@latest/browser/AMF3.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/amf3-ts@latest/browser/AMF3.js"></script>
 
 <script>
   const map = new Map([[1, 'Value']]);
@@ -172,7 +172,7 @@ This library also supports typed classes.
 
 **Typescript**
 ```ts
-import { AMF3 } from '@zaseth/amf3-ts';
+import { AMF3 } from 'amf3-ts';
 
 class Person {
   public name:string;
@@ -195,7 +195,7 @@ AMF3.deregisterClassAlias(Person); // Or 'com.person'
 
 **Node**
 ```js
-const { AMF3 } = require('@zaseth/amf3-ts');
+const { AMF3 } = require('amf3-ts');
 
 class Person {
   constructor(name, age) {
@@ -215,7 +215,7 @@ AMF3.deregisterClassAlias(Person); // Or 'com.person'
 
 **Browser**
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@zaseth/amf3-ts@latest/browser/AMF3.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/amf3-ts@latest/browser/AMF3.js"></script>
 
 <script>
   class Person {
@@ -240,7 +240,7 @@ AMF3.deregisterClassAlias(Person); // Or 'com.person'
 This library also supports externalizable classes.
 
 ```ts
-import { AMF3, IExternalizable, IDataInput, IDataOutput } from '@zaseth/amf3-ts';
+import { AMF3, IExternalizable, IDataInput, IDataOutput } from 'amf3-ts';
 
 class Character implements IExternalizable {
   public username: string;
@@ -272,7 +272,7 @@ AMF3.parse(AMF3.stringify(new Character('Zaseth', '123123')));
 This library also supports Dynamic property writers.
 
 ```ts
-import { AMF3, IDynamicPropertyWriter, IDynamicPropertyOutput } from '@zaseth/amf3-ts';
+import { AMF3, IDynamicPropertyWriter, IDynamicPropertyOutput } from 'amf3-ts';
 
 class HideSensitive implements IDynamicPropertyWriter {
   constructor() { }

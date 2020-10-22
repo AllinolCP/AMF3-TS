@@ -1,5 +1,5 @@
 {
-  "name": "@zaseth/amf3-ts",
+  "name": "amf3-ts",
   "version": "1.0.0",
   "description": "Fast AMF3 library written in pure Typescript with 0 dependencies, supporting TS, Node and the browser.",
   "main": "dist/index.js",

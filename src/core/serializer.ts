@@ -271,6 +271,26 @@ export class Serializer {
       this.stream.writeUInt29(3 | (traits.externalizable ? 4 : 0) | (traits.dynamic ? 8 : 0) | (traits.count << 4));
       this.serializeString(traits.className, false);
     }
+
+    if (traits.externalizable) {
+      return value.writeExternal(this.stream);
+    }
+
+    if (traits.dynamic) {
+      for (const key in value) {
+        this.serializeString(key, false);
+        this.serialize(value[key]);
+      }
+
+      return this.stream.writeUInt29(1);
+    }
+
+    for (let i: number = 0; i < traits.count; i++) {
+      const key: string = traits.keys[i];
+
+      this.serializeString(key, false);
+      this.serialize(value[key]);
+    }
   }
 
   /**

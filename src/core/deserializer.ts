@@ -68,7 +68,7 @@ export class Deserializer {
       case Markers.STRING: return this.deserializeString();
       case Markers.DATE: return this.deserializeDate();
       case Markers.ARRAY: return this.deserializeArray();
-      //case Markers.OBJECT: return this.deserializeObject();
+      case Markers.OBJECT: return this.deserializeObject();
       case Markers.BYTEARRAY: return this.deserializeByteArray();
       case Markers.VECTOR_INT: return this.deserializeVectorInt();
       case Markers.VECTOR_UINT: return this.deserializeVectorUint();
@@ -209,6 +209,68 @@ export class Deserializer {
           value[i] = deserialized;
         }
       }
+    }
+
+    return value;
+  }
+
+  /**
+   * @private
+   * @description Deserializes an object
+   * @returns {object}
+   */
+  private deserializeObject(): object {
+    if (this.reference.get('objectReferences', this.stream.readUInt29())) {
+      return this.reference.dereferenced as object;
+    }
+
+    let value: { [key: string]: any; } = {};
+    let traits: { [key: string]: any; } = {};
+
+    this.reference.add('objectReferences', value);
+
+    if (this.reference.get('traitReferences')) {
+      traits = this.reference.dereferenced as object;
+    } else {
+      traits = {
+        externalizable: Boolean(this.reference.popFlag()),
+        dynamic: Boolean(this.reference.popFlag()),
+        count: this.reference.flags,
+        className: this.deserializeString()
+      };
+
+      this.reference.add('traitReferences', traits);
+    }
+
+    if (traits.externalizable) {
+      if (!this.mapping.isRegisteredClassAlias(traits.className)) {
+        throw new Error(`Tried to deserialize an unregistered externalizable class: '${traits.className}'.`);
+      }
+
+      value = new (this.mapping.getDefinitionByName(traits.className) as any)();
+      value.readExternal(this.stream);
+
+      return value;
+    }
+
+    if (traits.dynamic) {
+      for (let key: string = this.deserializeString(); key !== ''; key = this.deserializeString()) {
+        value[key] = this.deserialize();
+      }
+
+      return value;
+    }
+
+    if (traits.className !== '') {
+      if (!this.mapping.isRegisteredClassAlias(traits.className)) {
+        throw new Error(`Tried to deserialize an unregistered class: '${traits.className}'.`);
+      }
+
+      value = new (this.mapping.getDefinitionByName(traits.className) as any)();
+    }
+
+    for (let i: number = 0; i < traits.count; i++) {
+      value[this.deserializeString()] = this.deserialize();
     }
 
     return value;

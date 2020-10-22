@@ -92,6 +92,24 @@ test('Array', (tape) => {
   tape.end();
 });
 
+test('Object', (tape) => {
+  const obj = { id: 1 };
+  const values = [
+    obj,
+    { ref1: obj, ref2: obj },
+    { obj },
+    { 1: obj, 2: obj }
+  ];
+
+  for (let i = 0; i < values.length; i++) {
+    const value = values[i];
+
+    tape.deepEqual(AMF3.parse(AMF3.stringify(value)), value);
+  }
+
+  tape.end();
+});
+
 test('ByteArray', (tape) => {
   const stream = new Stream();
   stream.writeUTF('Hello.');
@@ -174,6 +192,87 @@ test('Map', (tape) => {
 
     tape.deepEqual(AMF3.parse(AMF3.stringify(value)), value);
   }
+
+  tape.end();
+});
+
+test('Typed object', (tape) => {
+  class Person {
+    constructor(name, age) {
+      this.name = name;
+      this.age = age;
+    }
+  }
+
+  class Car {
+    constructor(brand, series) {
+      this.brand = brand;
+      this.series = series;
+    }
+  }
+
+  AMF3.registerClassAlias('test.person', Person);
+  AMF3.registerClassAlias('test.car', Car);
+
+  const values = [
+    new Person('Daan', 18),
+    new Person('Gravix', 16),
+    new Car('BMW', 'M3'),
+    new Car('Mercedes-AMG', 'C63')
+  ];
+
+  tape.ok(AMF3.isRegisteredClassAlias(Person));
+  tape.ok(AMF3.isRegisteredClassAlias(Car));
+  tape.ok(AMF3.isRegisteredClassAlias('test.person'));
+  tape.ok(AMF3.isRegisteredClassAlias('test.car'));
+
+  for (let i = 0; i < values.length; i++) {
+    const value = values[i];
+
+    tape.deepEqual(AMF3.parse(AMF3.stringify(value)), value);
+  }
+
+  AMF3.deregisterClassAlias(Person);
+  AMF3.deregisterClassAlias('test.car');
+
+  tape.notOk(AMF3.isRegisteredClassAlias(Person));
+  tape.notOk(AMF3.isRegisteredClassAlias(Car));
+  tape.notOk(AMF3.isRegisteredClassAlias('test.person'));
+  tape.notOk(AMF3.isRegisteredClassAlias('test.car'));
+
+  tape.end();
+});
+
+test('Anonymous object', (tape) => {
+  class Person {
+    constructor(name, age) {
+      this.name = name;
+      this.age = age;
+    }
+  }
+
+  class Car {
+    constructor(brand, series) {
+      this.brand = brand;
+      this.series = series;
+    }
+  }
+
+  const values = [
+    new Person('Daan', 18),
+    new Person('Gravix', 16),
+    new Car('BMW', 'M3'),
+    new Car('Mercedes-AMG', 'C63')
+  ];
+
+  for (let i = 0; i < values.length; i++) {
+    const value = values[i];
+
+    tape.deepLooseEqual(AMF3.parse(AMF3.stringify(value)), value);
+  }
+
+  tape.notOk(AMF3.isRegisteredClassAlias(Person));
+  tape.notOk(AMF3.isRegisteredClassAlias(Car));
 
   tape.end();
 });

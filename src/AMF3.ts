@@ -20,6 +20,37 @@ export abstract class AMF3 {
   /**
    * @public
    * @static
+   * @description Sets the dynamic property writer
+   * @param {object} dpw
+   * @returns {void}
+   */
+  public static setDynamicPropertyWriter(dpw: object): void {
+    this.mapping.setDynamicPropertyWriter(dpw);
+  }
+
+  /**
+   * @public
+   * @static
+   * @description Returns the dynamic property writer
+   * @returns {object|null}
+   */
+  public static getDynamicPropertyWriter(): object | null {
+    return this.mapping.getDynamicPropertyWriter();
+  }
+
+  /**
+   * @public
+   * @static
+   * @description Returns whether a dynamic property writer is registered
+   * @returns {boolean}
+   */
+  public static hasDynamicPropertyWriter(): boolean {
+    return this.mapping.hasDynamicPropertyWriter();
+  }
+
+  /**
+   * @public
+   * @static
    * @description Registers a class alias
    * @param {string} aliasName
    * @param {object} classObject

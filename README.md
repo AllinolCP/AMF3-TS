@@ -39,7 +39,7 @@ npm i @zaseth/amf3-ts
 | Name                      | Supported | Platform   |
 |---------------------------|-----------|------------|
 | Class alias               |✔️         | All        |
-| Dynamic property writer   |❌         | Typescript |
+| Dynamic property writer   |✔️         | Typescript |
 | Externalizable classes    |✔️         | Typescript |
 
 # Usage
@@ -104,16 +104,19 @@ This library has a few changes:
 - Vector has been changed to `typed arrays`
 - Vector object has been changed to `Set`
 - Dictionary has been changed to `Map`
+- ByteArray has been changed to `Stream`
 - You can freeze Vector arrays using `Object.preventExtensions`
 
 **Typescript**
 ```ts
-import { AMF3 } from '@zaseth/amf3-ts';
+import { AMF3, Stream } from '@zaseth/amf3-ts';
 
 const map: Map<string | number, any> = new Map([[1, 'Value']]);
 const set: Set<any> = new Set([1, 'A', 2, 'B', 3, 'C']);
 const vectorInt:Int32Array = new Int32Array([1,2,3]);
 const fixedVectorUint:Uint32Array = new Uint32Array([1,2,3]);
+const stream:Stream = new Stream();
+stream.writeUTF('AMF3-TS');
 
 Object.preventExtensions(fixedVectorUint);
 
@@ -121,16 +124,19 @@ AMF3.parse(AMF3.stringify(map));
 AMF3.parse(AMF3.stringify(set));
 AMF3.parse(AMF3.stringify(vectorInt));
 AMF3.parse(AMF3.stringify(fixedVectorUint));
+AMF3.parse(AMF3.stringify(stream));
 ```
 
 **Node**
 ```js
-const { AMF3 } = require('@zaseth/amf3-ts');
+const { AMF3, Stream } = require('@zaseth/amf3-ts');
 
 const map = new Map([[1, 'Value']]);
 const set = new Set([1, 'A', 2, 'B', 3, 'C']);
 const vectorInt = new Int32Array([1,2,3]);
 const fixedVectorUint = new Uint32Array([1,2,3]);
+const stream = new Stream();
+stream.writeUTF('AMF3-TS');
 
 Object.preventExtensions(fixedVectorUint);
 
@@ -138,6 +144,7 @@ AMF3.parse(AMF3.stringify(map));
 AMF3.parse(AMF3.stringify(set));
 AMF3.parse(AMF3.stringify(vectorInt));
 AMF3.parse(AMF3.stringify(fixedVectorUint));
+AMF3.parse(AMF3.stringify(stream));
 ```
 
 **Browser**
@@ -264,4 +271,26 @@ AMF3.parse(AMF3.stringify(new Character('Zaseth', '123123')));
 
 This library also supports Dynamic property writers.
 
-Todo.
+```ts
+import { AMF3, IDynamicPropertyWriter, IDynamicPropertyOutput } from '@zaseth/amf3-ts';
+
+class HideSensitive implements IDynamicPropertyWriter {
+  constructor() { }
+
+  public writeDynamicProperties(obj: object, output: IDynamicPropertyOutput): void {
+    for (const prop in obj) {
+      if (prop.toLowerCase() !== 'password') {
+        output.writeDynamicProperty(prop, obj[prop]);
+      }
+    }
+  }
+}
+
+AMF3.setDynamicPropertyWriter(new HideSensitive());
+AMF3.hasDynamicPropertyWriter(); // True
+
+AMF3.parse(AMF3.stringify({ id: 1, username: 'Zaseth', password: '123123' }));
+
+AMF3.setDynamicPropertyWriter(null); // Reset
+AMF3.hasDynamicPropertyWriter(); // False
+```

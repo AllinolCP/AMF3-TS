@@ -1,4 +1,4 @@
-import { Stream, ECMAArray } from '../index';
+import { Stream, ECMAArray, IDynamicPropertyOutput } from '../index';
 import { Mapping } from '../utils/mapping';
 import { Reference } from '../utils/reference';
 import { Markers } from '../enums/markers';
@@ -7,8 +7,9 @@ import Utils from '../utils/index';
 /**
  * @exports
  * @class
+ * @implements IDynamicPropertyOutput
  */
-export class Serializer {
+export class Serializer implements IDynamicPropertyOutput {
   /**
    * @private
    * @description The stream holder
@@ -83,6 +84,18 @@ export class Serializer {
     }
 
     return this.stream.data;
+  }
+
+  /**
+   * @public
+   * @description Writes the name and value of an IDynamicPropertyOutput object to an object with dynamic properties
+   * @param {string} name
+   * @param {any} value
+   * @returns {void}
+   */
+  public writeDynamicProperty(name: string, value: any): void {
+    this.serializeString(name, false);
+    this.serialize(value);
   }
 
   /**
@@ -277,9 +290,17 @@ export class Serializer {
     }
 
     if (traits.dynamic) {
-      for (const key in value) {
-        this.serializeString(key, false);
-        this.serialize(value[key]);
+      if (this.mapping.hasDynamicPropertyWriter()) {
+        const dpw: object = this.mapping.getDynamicPropertyWriter() as object;
+
+        if (Utils.isDynamicPropertyWriterClass(dpw)) {
+          dpw.writeDynamicProperties(value, this);
+        }
+      } else {
+        for (const key in value) {
+          this.serializeString(key, false);
+          this.serialize(value[key]);
+        }
       }
 
       return this.stream.writeUInt29(1);

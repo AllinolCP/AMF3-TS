@@ -52,10 +52,6 @@ export class Mapping {
    * @returns {void}
    */
   public setDynamicPropertyWriter(dpw: object | null): void {
-    if (!Utils.isDynamicPropertyWriterClass(dpw as object)) {
-      throw new TypeError('Dynamic property writers must be implemented by IDynamicPropertyWriter.')
-    }
-
     this.dynamicPropertyWriter = dpw;
   }
 

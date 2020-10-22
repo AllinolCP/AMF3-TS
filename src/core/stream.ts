@@ -97,6 +97,20 @@ export class Stream implements IDataInput, IDataOutput {
   }
 
   /**
+   * @private
+   * @description Simulates signed overflow
+   * @author truelossless
+   * @param {number} value
+   * @param {number} bits
+   * @returns {number}
+   */
+  private signedOverflow(value: number, bits: number): number {
+    const sign: number = 1 << bits - 1;
+
+    return (value & sign - 1) - (value & sign);
+  }
+
+  /**
    * @public
    * @description Writes a boolean
    * @param {boolean} value
@@ -124,7 +138,7 @@ export class Stream implements IDataInput, IDataOutput {
   public writeByte(value: number): void {
     this.canWrite(value, Sizes.INT8_MIN, Sizes.INT8_MAX);
 
-    this.data[this.position++] = value;
+    this.data[this.position++] = this.signedOverflow(value, 8);
   }
 
   /**
@@ -168,6 +182,8 @@ export class Stream implements IDataInput, IDataOutput {
    * @returns {void}
    */
   public writeShort(value: number): void {
+    value = this.signedOverflow(value, 16);
+
     this.canWrite(value, Sizes.INT16_MIN, Sizes.INT16_MAX);
 
     if (this.endian) {
@@ -234,6 +250,8 @@ export class Stream implements IDataInput, IDataOutput {
    * @returns {void}
    */
   public writeInt(value: number): void {
+    value = this.signedOverflow(value, 32);
+
     this.canWrite(value, Sizes.INT32_MIN, Sizes.INT32_MAX);
 
     if (this.endian) {
